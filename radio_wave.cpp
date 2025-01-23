@@ -25,23 +25,33 @@ int main() {
                 count++;
             }
         }
-        cout << count << " ";
+        cout << count << "\n";
     }
 
-    // Find the maximum number of cities a tower can cover
-    int maxCoverage = 0;
-    for (int i = 0; i < n; ++i) {
-        int count = 0;
-        // Count how many cities are covered by a tower placed at a[i]
-        for (int j = 0; j < n; ++j) {
-            if (abs(a[j] - a[i]) <= d) {  // Checking the distance between the cities
-                count++;
-            }
+   int maxCoverage = 0;
+    int bestCenter = 0;
+
+    int i = 0; // Start of the sliding window
+    for (int center = a[0] - d; center <= a[n-1] + d; ++center) {
+        // Adjust the start of the window to keep within range [center - d, center + d]
+        while (i < n && a[i] < center - d) {
+            i++;
         }
-        maxCoverage = max(maxCoverage, count);  // Updating the maximum coverage
+
+        // Count how many cities are within range [center - d, center + d]
+        int count = 0;
+        for (int j = i; j < n && a[j] <= center + d; ++j) {
+            count++;
+        }
+
+        // Update maximum coverage and best center
+        if (count > maxCoverage) {
+            maxCoverage = count;
+            bestCenter = center;
+        }
     }
-    
-    cout << maxCoverage << '\n';
+
+    cout<< bestCenter << "\n";
 
     return 0;
 }
