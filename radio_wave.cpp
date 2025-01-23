@@ -1,41 +1,47 @@
 #include <iostream>
-#include <vector>
 using namespace std;
 
 int a[(int)1e5 + 5];
 
 int main() {
-    ios_base::sync_with_stdio(false); 
+    ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     
     int n, d;
     cin >> n >> d;
     
+    // Reading city positions
     for (int i = 0; i < n; ++i) {
         cin >> a[i];
     }
     
-    // Number of cities covered if the tower is placed at city a[i]
+    // Calculate the number of cities covered by a tower at each city position
     for (int i = 0; i < n; ++i) {
-        int ans = 0;
-        int left = a[i] - d, right = a[i] + d;
+        int count = 0;
+        
+        // Count how many cities are covered by a tower placed at a[i]
         for (int j = 0; j < n; ++j) {
-            if (a[j] >= left && a[j] <= right) {
-                ans++;
+            if (abs(a[j] - a[i]) <= d) {  // Checking the distance between the cities
+                count++;
             }
         }
-        cout << ans << '\n';
+        cout << count << " ";
     }
 
-    // Maximum number of cities that can be covered by a single tower
-    int ans = 0, j = 0;
+    // Find the maximum number of cities a tower can cover
+    int maxCoverage = 0;
     for (int i = 0; i < n; ++i) {
-        while (j < n && a[j] <= a[i] + d) {
-            j++;
+        int count = 0;
+        // Count how many cities are covered by a tower placed at a[i]
+        for (int j = 0; j < n; ++j) {
+            if (abs(a[j] - a[i]) <= d) {  // Checking the distance between the cities
+                count++;
+            }
         }
-        ans = max(ans, j - i);
+        maxCoverage = max(maxCoverage, count);  // Updating the maximum coverage
     }
-    cout << ans << '\n';
+    
+    cout << maxCoverage << '\n';
 
     return 0;
 }
