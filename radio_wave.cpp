@@ -1,44 +1,51 @@
 #include <iostream>
-using namespace std;
+#include <vector>
+#include <algorithm>
+#include <cmath>
+#include <cassert>
 
-int a[(int)1e5 + 5];
+using namespace std;
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    
+
     int n, d;
     cin >> n >> d;
+
+    vector<int> a(n);
     
     // Reading city positions
     for (int i = 0; i < n; ++i) {
         cin >> a[i];
     }
     
-    // Calculate the number of cities covered by a tower at each city position
+    // Sort the city positions to apply binary search
+    sort(a.begin(), a.end());
+
+    // First part: Efficiently count cities covered by a tower at each city position
     for (int i = 0; i < n; ++i) {
-        int count = 0;
+        // Using binary search to find the range of cities covered by the tower
+        int left = lower_bound(a.begin(), a.end(), a[i] - d) - a.begin();
+        int right = upper_bound(a.begin(), a.end(), a[i] + d) - a.begin();
         
-        // Count how many cities are covered by a tower placed at a[i]
-        for (int j = 0; j < n; ++j) {
-            if (abs(a[j] - a[i]) <= d) {  // Checking the distance between the cities
-                count++;
-            }
-        }
+        int count = right - left; // Number of cities within range
         cout << count << "\n";
     }
 
-   int maxCoverage = 0;
+    // Second part: Find the tower position with maximum coverage using sliding window
+    int maxCoverage = 0;
     int bestCenter = 0;
 
-    int i = 0; // Start of the sliding window
+    // Sliding window approach: for each city, calculate the number of cities within the range of d
+    int i = 0; // Left pointer for the sliding window
     for (int center = a[0] - d; center <= a[n-1] + d; ++center) {
-        // Adjust the start of the window to keep within range [center - d, center + d]
+        // Move the left pointer to maintain the valid window range
         while (i < n && a[i] < center - d) {
             i++;
         }
 
-        // Count how many cities are within range [center - d, center + d]
+        // Count how many cities are within the range [center - d, center + d]
         int count = 0;
         for (int j = i; j < n && a[j] <= center + d; ++j) {
             count++;
@@ -51,7 +58,8 @@ int main() {
         }
     }
 
-    cout<< maxCoverage << "\n";
+    cout << maxCoverage << "\n";
 
     return 0;
 }
+
