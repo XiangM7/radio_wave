@@ -51,7 +51,7 @@ int main() {
         }
     }
 
-    cout<< bestCenter << "\n";
+    cout<< maxCoverage << "\n";
 
     return 0;
 }
