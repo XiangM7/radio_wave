@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
 #include <cmath>
 #include <cassert>
 
@@ -19,8 +18,7 @@ int main() {
     {
         cin >> a[i];
     }
-    //Even input example is sorted, but still use this to make sure, for make binary search faster
-    sort(a.begin(), a.end());
+   
 
     int left = 0, right = 0; 
     for (int i = 0; i < n; i++) 
