@@ -25,16 +25,16 @@ int main() {
     // Part 1: Coverage for each city in O(n log n)
     // -------------------------
     for (int i = 0; i < n; ++i) {
-        long long towerPos = a[i];
-        long long leftRange = towerPos - d;
-        long long rightRange = towerPos + d;
+        long long tower = a[i];
+        long long left = tower - d;
+        long long right = tower + d;
 
-        // Lower bound: first city >= leftRange
-        int leftIdx = int(lower_bound(a.begin(), a.end(), leftRange) - a.begin());
-        // Upper bound: first city > rightRange
-        int rightIdx = int(upper_bound(a.begin(), a.end(), rightRange) - a.begin());
+        // Lower bound: first city >= left
+        int leftIdx = int(lower_bound(a.begin(), a.end(), left) - a.begin());
+        // Upper bound: first city > right
+        int rightIdx = int(upper_bound(a.begin(), a.end(), right) - a.begin());
 
-        int coverage = rightIdx - leftIdx; // number of cities in [leftRange, rightRange]
+        int coverage = rightIdx - leftIdx; // number of cities in [left, right]
         cout << coverage << "\n";
     }
 
@@ -42,29 +42,25 @@ int main() {
     // Part 2: Maximum coverage (and a best center) in O(n)
     // -------------------------
     // We want the largest number of cities that fit inside an interval of length 2*d.
-    // a[end] - a[start] <= 2*d. Move end and adjust start with a two-pointer technique.
+    
 
     int maxCoverage = 0;
 
-    int start = 0;
-    for (int end = 0; end < n; ++end) {
+    int i = 0;
+    for (int j = 0; end < n; ++j) {
         // Shrink from the left if the window is too large
-        while (a[end] - a[start] > 2LL * d) {
-            start++;
+        while (a[j] - a[i] > 2LL * d) {
+            i++;
         }
-        int coverage = end - start + 1;
+        int coverage = j - i + 1;
         if (coverage > maxCoverage) {
             maxCoverage = coverage;
-            // For all cities in [start..end], they fit inside an interval of length 2*d.
-            // A valid center can be anywhere in [a[end]-d, a[start]+d].
-            // We'll choose one possible center (for example, a[start] + d).
         }
     }
 
     // Print maximum coverage
     cout << maxCoverage << "\n";
-    // If you need the actual center, you can also print bestCenter, e.g.:
-    // cout << bestCenter << "\n";
+   
 
     return 0;
 }
