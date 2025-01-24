@@ -35,7 +35,6 @@ int main() {
 
     // Second part: Find the tower position with maximum coverage using sliding window
     int maxCoverage = 0;
-    int bestCenter = 0;
 
     // Sliding window approach: for each city, calculate the number of cities within the range of d
     int i = 0; // Left pointer for the sliding window
@@ -54,7 +53,6 @@ int main() {
         // Update maximum coverage and best center
         if (count > maxCoverage) {
             maxCoverage = count;
-            bestCenter = center;
         }
     }
 
