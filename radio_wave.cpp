@@ -9,59 +9,60 @@ using namespace std;
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-
-    int n, d;
+    
+    int n;
+    long long d;
     cin >> n >> d;
 
     vector<long long> a(n);
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++) 
+    {
         cin >> a[i];
     }
-
-    // 1) Sort the city positions
+    //Even input example is sorted, but still use this to make sure, for make binary search faster
     sort(a.begin(), a.end());
 
-    // -------------------------
-    // Part 1: Coverage for each city in O(n log n)
-    // -------------------------
-    for (int i = 0; i < n; ++i) {
-        long long tower = a[i];
-        long long left = tower - d;
-        long long right = tower + d;
+    int left = 0, right = 0; 
+    for (int i = 0; i < n; i++) 
+    {
+        long long minVal = a[i] - d;
+        long long maxVal = a[i] + d;
 
-        // Lower bound: first city >= left
-        int leftIdx = int(lower_bound(a.begin(), a.end(), left) - a.begin());
-        // Upper bound: first city > right
-        int rightIdx = int(upper_bound(a.begin(), a.end(), right) - a.begin());
-
-        int coverage = rightIdx - leftIdx; // number of cities in [left, right]
+        // Advance 'left' so that it's the first index where a[left] >= minVal
+        while (left < n && a[left] < minVal) 
+        {
+            left++;
+        }
+        // Advance 'right' so that it's the first index where a[right] > maxVal
+        while (right < n && a[right] <= maxVal) 
+        {
+            right++;
+        }
+        int coverage = right - left;
+        
         cout << coverage << "\n";
     }
-
-    // -------------------------
-    // Part 2: Maximum coverage (and a best center) in O(n)
-    // -------------------------
-    // We want the largest number of cities that fit inside an interval of length 2*d.
     
-
+    // Part 2: Maximum coverage (and a best center) in O(n)
     int maxCoverage = 0;
-
     int i = 0;
-    for (int j = 0; end < n; ++j) {
+    for (int j = 0; j < n; ++j) 
+    {
         // Shrink from the left if the window is too large
-        while (a[j] - a[i] > 2LL * d) {
+        while (a[j] - a[i] >  2 * d) 
+        {
             i++;
         }
         int coverage = j - i + 1;
-        if (coverage > maxCoverage) {
+        if (coverage > maxCoverage) 
+        {
             maxCoverage = coverage;
         }
     }
-
-    // Print maximum coverage
     cout << maxCoverage << "\n";
    
 
     return 0;
 }
+
 
