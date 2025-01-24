@@ -13,50 +13,58 @@ int main() {
     int n, d;
     cin >> n >> d;
 
-    vector<int> a(n);
-    
-    // Reading city positions
-    for (int i = 0; i < n; ++i) {
+    vector<long long> a(n);
+    for (int i = 0; i < n; i++) {
         cin >> a[i];
     }
-    
-    // Sort the city positions to apply binary search
+
+    // 1) Sort the city positions
     sort(a.begin(), a.end());
 
-    // First part: Efficiently count cities covered by a tower at each city position
+    // -------------------------
+    // Part 1: Coverage for each city in O(n log n)
+    // -------------------------
     for (int i = 0; i < n; ++i) {
-        // Using binary search to find the range of cities covered by the tower
-        int left = lower_bound(a.begin(), a.end(), a[i] - d) - a.begin();
-        int right = upper_bound(a.begin(), a.end(), a[i] + d) - a.begin();
-        
-        int count = right - left; // Number of cities within range
-        cout << count << "\n";
+        long long towerPos = a[i];
+        long long leftRange = towerPos - d;
+        long long rightRange = towerPos + d;
+
+        // Lower bound: first city >= leftRange
+        int leftIdx = int(lower_bound(a.begin(), a.end(), leftRange) - a.begin());
+        // Upper bound: first city > rightRange
+        int rightIdx = int(upper_bound(a.begin(), a.end(), rightRange) - a.begin());
+
+        int coverage = rightIdx - leftIdx; // number of cities in [leftRange, rightRange]
+        cout << coverage << "\n";
     }
 
-    // Second part: Find the tower position with maximum coverage using sliding window
+    // -------------------------
+    // Part 2: Maximum coverage (and a best center) in O(n)
+    // -------------------------
+    // We want the largest number of cities that fit inside an interval of length 2*d.
+    // a[end] - a[start] <= 2*d. Move end and adjust start with a two-pointer technique.
+
     int maxCoverage = 0;
 
-    // Sliding window approach: for each city, calculate the number of cities within the range of d
-    int i = 0; // Left pointer for the sliding window
-    for (int center = a[0] - d; center <= a[n-1] + d; ++center) {
-        // Move the left pointer to maintain the valid window range
-        while (i < n && a[i] < center - d) {
-            i++;
+    int start = 0;
+    for (int end = 0; end < n; ++end) {
+        // Shrink from the left if the window is too large
+        while (a[end] - a[start] > 2LL * d) {
+            start++;
         }
-
-        // Count how many cities are within the range [center - d, center + d]
-        int count = 0;
-        for (int j = i; j < n && a[j] <= center + d; ++j) {
-            count++;
-        }
-
-        // Update maximum coverage and best center
-        if (count > maxCoverage) {
-            maxCoverage = count;
+        int coverage = end - start + 1;
+        if (coverage > maxCoverage) {
+            maxCoverage = coverage;
+            // For all cities in [start..end], they fit inside an interval of length 2*d.
+            // A valid center can be anywhere in [a[end]-d, a[start]+d].
+            // We'll choose one possible center (for example, a[start] + d).
         }
     }
 
+    // Print maximum coverage
     cout << maxCoverage << "\n";
+    // If you need the actual center, you can also print bestCenter, e.g.:
+    // cout << bestCenter << "\n";
 
     return 0;
 }
